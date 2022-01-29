@@ -8,7 +8,7 @@ Resources:
       ImageId: "ami-08e4e35cccc6189f4"
       InstanceType: "t2.micro"
       SecurityGroups:
-        - !Ref InClassFirstSecGroup
+        - InClassFirstSecGroup
       UserData:
         Fn::Base64:
           !Sub |
@@ -24,21 +24,6 @@ Resources:
             wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/cat2.jpg
             wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/cat3.png
 
-
-  InClassFirstSecGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: "This_is_done_in_the_class" # Required
-      SecurityGroupIngress:
-        - CidrIp: "0.0.0.0/0"
-          FromPort: 22
-          IpProtocol: "tcp"
-          ToPort: 22
-        
-        - CidrIp: "0.0.0.0/0"
-          FromPort: 80
-          IpProtocol: "tcp"
-          ToPort: 80
 
 
   
