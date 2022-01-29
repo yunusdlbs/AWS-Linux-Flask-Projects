@@ -1,20 +1,44 @@
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: |
-  This template launches an EC2 instance which enables SSH.
-
+  This website
 Resources:
-  CFNInstance:
+  myec2:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-08e4e35cccc6189f4
-      InstanceType: t2.micro
-      KeyName: firstkey # Please use your own key name without .pem
-      SecurityGroups: 
-        - cfn-sec-group
-      Tags:
-        - Key: Name
-          Value: Web Server of Stackname
+      ImageId: "ami-08e4e35cccc6189f4"
+      InstanceType: "t2.micro"
+      SecurityGroups:
+        - !Ref InClassFirstSecGroup
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #! /bin/bash
+            yum update -y
+            yum install httpd -y
+            systemctl start httpd
+            systemctl enable httpd
+            cd /var/www/html
+            wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/index.html
+            wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/cat0.jpg
+            wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/cat1.jpg
+            wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/cat2.jpg
+            wget https://raw.githubusercontent.com/yunusdlbs/my-projects/main/AWS/Project-101-kittens-carousel-static-website-ec2/static-web/cat3.png
+
+
+  InClassFirstSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "This_is_done_in_the_class" # Required
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 22
+          IpProtocol: "tcp"
+          ToPort: 22
+        
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 80
+          IpProtocol: "tcp"
+          ToPort: 80
 
 
   
