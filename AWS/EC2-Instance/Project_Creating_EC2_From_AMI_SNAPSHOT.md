@@ -1,6 +1,6 @@
 # Teamwork-Project-01 : Working with EC2 Snapshots, AMIs and Volumes
 
-Purpose of the this project is to learn how to take a snapshot of EC2 instance, create an image and volume (root and additional volumes), creating another volume and instance from these snapshots, attaching and mounting new volume and instance together.
+Purpose of the this project is to learn how to take a snapshot of EC2 instance, create an image and volume (root and additional volumes), creating new volume and instance from these snapshots, attaching and mounting new volume and instance together.
 
 ## Learning Outcomes
 
@@ -24,31 +24,32 @@ Purpose of the this project is to learn how to take a snapshot of EC2 instance, 
 
 Part 1 - Creating an EC2 instance (EC2A) with an additional volume (10 GiB)
 
-Part 2 - Mounting the additional volume and Adding a test.txt file to additional volume
+Part 2 - Mounting the additional volume and adding a test.txt file to additional volume
 
-Part 4 - Taking snapshot of the EC2 (EC2A) with 2 volumes
+Part 3 - Taking snapshot of the EC2 (EC2A) with 2 volumes
 
-Part 5 - Create an instance (EC2B) from root volume's snapshop of EC2A
+Part 4 - Create an instance (EC2B) from root volume's snapshop of EC2A
 
-Part 6 - Create an additional volume (10 GiB) from additional volume's snapshop of EC2A
+Part 5 - Create an new volume (15 GiB) from additional volume's snapshop of EC2A
 
-Part 7 - Attach and Mount EC2B and additional volume (10 GiB)
+Part 6 - Mount EC2B and additional volume (15 GiB)
 
-## Part 1 - Creating an Image from the Snapshot of the Nginx Server and Launching a new Instance
+## Part 1 - Creating an EC2 instance (EC2A) with an additional volume (10 GiB)
 
--  Launch an instance name EC2_A with following configurations.
- 
-
-  a. Step 1: select Amazon Linux 2 AMI
-  b. Step 2: select t2.micro
-  c. Step 3: For further steps note your Subnet region 
-  d. Step 4: Add New Volume; Volume Type: EBS, Size 10 GiB (Note; your device column name "/dev/sdb)
-  e. Step 5: Tag; Name, EC2_A
-  f. Step 6: Configure Security Group; Type: SHH Port: 22
-  g. Step 7: Then Creat
+-  Launch an instance name EC2A with following configurations.
+    
+    Step 1: select Amazon Linux 2 AMI
+    Step 2: select t2.micro
+    Step 3: For further steps note your Subnet region 
+    Step 4: Add New Volume; Volume Type: EBS, Size 10 GiB (Note; your device column name "/dev/sdb)
+    Step 5: Tag; Name, EC2_
+    Step 6: Configure Security Group; Type: SHH Port: 22
+    Step 7: Creat
 
 
 ## Part 2 - Mounting the additional volume
+
+  - Connect EC2A via ssh from terminal.
 
 # check volumes which volumes attached to instance. 
 lsblk
@@ -72,77 +73,82 @@ ls -lh /mnt/2nd-vol/
 # Adding a test.txt file to additional volume
 cd /mnt/2nd-vol
 sudo vi test.txt
-# write "Your_Name was Here.. For 2nd-vol"
-# read and check "Your Name was Here.. For 2nd-vol" 
+# write the text --> "Your_Name was Here..!" in the test.txt
+# read and check "Your_Name was Here..!" 
 cat test.txt 
 
-## Part 4 - Taking snapshot of the EC2 (EC2A) with 2 volumes
+## Part 3 - Taking snapshot of the EC2 (EC2A) with 2 volumes
 
-Go to Volume
-Select Root Volume Action/creat SnapShot
-  Tag: RootVolumeSnapshot
+Go to "Elastic Block Store" on left hand menu
+Click "snapshots"
+Click "Create snapshot"
 
-Select Additional Volume
-Action/creat SnapShot
-  Tag: AdditionalVolumeSnapshot
+Select Instance
+  Instance ID: EC2A
+  Description: EC2A Snapshot
+  Root volume: Include
+  Tag: Name, EC2A_Instance_Snapshot
 
-Go to SnapShot
-Select "RootVolumeSnapshot" Creat SnapShot
+## Part 4 - Create an instance (EC2B) from root volume's snapshop of EC2A
 
-Go to SnapShot
-Select "AdditionalVolumeSnapshot" Creat Volume
+Select "RootVolumeSnapshot" (8 GiB)
+  Actions --> create image from snapshot
+    Image name: Image_for_EC2B
+    Description: Image_for_EC2B
+    
+    Click "Create image"
+
+Go to AMIs on left hand menu
+Select "Image_for_EC2B"
+  Click "Launch instance from image"
+    Step 3: Configure Instance Details --> Subnet: Default in us-east-1a
+    Step 5: Add Tags --> Name, EC2B
+    Step 6: Configure Security Group; Type: SHH Port: 22
+    Click "launch"
 
 
+## Part 5 - Create an new volume (15 GiB) from additional volume's snapshop of EC2A
+
+Go to "Elastic Block Store" on left hand menu
+Click "snapshots"
+  Select "AdditionalVolumeSnapshot" (10 GiB)
+    Actions --> create volume from snapshot
+      Size (GiB): 15
+      Availability Zone: us-east-1a
+      Tags: Name, new_add_vol
+      Click "Create volume"
+
+Go to "Elastic Block Store" on left hand menu
+Click "Volumes"
+Select "new_add_vol"
+  Actions --> "attach volume"
+    Instance: EC2B
+
+    Click "Attach volume"
 
 
-## Part 5 - Create an instance (EC2B) from root volume's snapshop of EC2A (Enter your own ssh link...)
+## Part 6 - Mount EC2B and additional volume (15 GiB)
 
-First enter the Snapsot part.
-Choose root snapshot and create image from this snapsot. (Name it "Mynew_AMI")
-After creating new image you can see in AMI's your "Mynew_AMI"
-With choosing "Mynew_AMI" create new enstance and named it as "EC2B"
+  - Connect EC2B via ssh from terminal
+  (Note: Don't forget change username from root to ec2-user eg.;
+  ssh -i "firstkey.pem" `root`@ec2-44-200-218-109.compute-1.amazonaws.com) (wrong format)
+  ssh -i "firstkey.pem" `ec2-user`@ec2-44-200-218-109.compute-1.amazonaws.com) (correct format)
 
-
-Connect to EC2B with SSH But use "ec2-user" instead of "root"
-$ ssh -i "FirstKey.pem" root@ec2-3-94-86-243.compute-1.amazonaws.com 
-$ ssh -i "FirstKey.pem" ec2-user@ec2-3-94-86-243.compute-1.amazonaws.com
-
+# check volumes which volumes attached to instance. 
 lsblk
-  You'll see there is only one root volume. Here, we'll attach our first Addional Volume to this machine.
-
-## Part 6 - Create an additional volume (10 GiB) from additional volume's snapshop of EC2A
-
-Enter snaphot part from your AWS Console.
-Choose Additional snapshot and from Actions choose "Create Volume", follow the steps. Name it "Snapshot Volume". Be carefull while choosing zone. Here you can^t decrease the Volume amount (10GB), but increase if you want.
-After Creating you'll see your new volume in Volumes.
-
-## Part 7 - Attach and Mount EC2B and additional volume (10 GiB)
-Enter Volumes from AWS Console.
-Choose "Snapshot Volume" and from Actions Detach this volume to our new EC2B instance.
-After that choose EC2B and Connet with ssh to this machine.
-
-$ ssh -i "FirstKey.pem" ec2-user@ec1-1-1-1-1.compute-1.amazonaws.com
-
-## check volumes which volumes attached to instance. 
-lsblk    (You'll see new Volume is attached, it's path is described, but not mounted. Here no need to format this volume. Because we did that in the first EC2A.)
 df -h
-
+# create a mounting point path for new volume
+sudo mkdir /mnt/3nd-vol
 # mount the new volume to the mounting point path
-sudo mount /dev/xvdb /mnt/2nd-vol
-
+sudo mount /dev/xvdf /mnt/3nd-vol
+# check if there is data on it or not.
+ls -lh /mnt/3nd-vol/
+# read and check "Your Name was Here..!" in test.txt 
+cd /mnt/3nd-vol
+cat test.txt
+# resize the volume to 15GiB (add 5 GiB to this partition)
+sudo resize2fs /dev/xvdf 
 # check if the attached volume is mounted to the mounting point path
 lsblk
 # show the available space, on the mounting point path
-df -h (After that we can enter into Addional Volume and see the txt file before we created.)
-
-# Let's see the content of our Additonal Volume.
-ls -l
-
-
-
-
-
-
-
-
-
+df -h
