@@ -40,7 +40,20 @@ Resources:
           Value: !Sub Web Server of ${AWS::StackName}
       UserData: !Base64 |
         #! /bin/bash
+        yum update -y
+        pip3 install flask
+        wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/Project_001_.png
+        wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/app.py
+        wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/project-001-snapshot.png
+        mkdir templates && cd templates
+        wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/templates/index.html
+        wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/templates/result.html
         
- 
-Outputs:
+ Outputs:
+  AppUrl:
+    Description: URL of the Roman_Number_Converter
+    Value: !Join 
+       - ''
+       - - 'http://'
+         - !GetAtt Roman_Number_Instance.PublicIp
    
