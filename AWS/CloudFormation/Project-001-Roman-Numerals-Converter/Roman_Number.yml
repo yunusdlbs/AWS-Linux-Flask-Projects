@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template launches an instance deploys Flask methods and as a result shows you a website related with Roman Numbers.
+  
+Parameters:
+  Key:
+    Description: Select your key
+    Type: AWS::EC2::KeyPair::KeyName
+
+Metadata:
+  
+Mappings:
+  
+Conditions:
+  
+Resources:
+  HTTP-SSH_SecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP for Apache Web Server and SSH for secure connection. # Required
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  
+  Roman_Number_Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-033b95fb8079dc481
+      InstanceType: t2.micro
+      KeyName: !Ref Key
+      SecurityGroupIds:
+        - !Ref HTTP-SSH_SecGroup
+      Tags:
+        - Key: Name
+          Value: !Sub Web Server of ${AWS::StackName}
+      UserData: !Base64 |
+        #! /bin/bash
+        
+ 
+Outputs:
+   
