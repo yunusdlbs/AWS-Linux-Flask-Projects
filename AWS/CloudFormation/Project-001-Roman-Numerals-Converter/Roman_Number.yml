@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
+
 Description: This template launches an instance deploys Flask methods and as a result shows you a website related with Roman Numbers.
   
 Parameters:
@@ -6,14 +7,8 @@ Parameters:
     Description: Select your key
     Type: AWS::EC2::KeyPair::KeyName
 
-Metadata:
-  
-Mappings:
-  
-Conditions:
-  
 Resources:
-  HTTP-SSH_SecGroup:
+  HTTPSSHSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable HTTP for Apache Web Server and SSH for secure connection. # Required
@@ -27,14 +22,14 @@ Resources:
           ToPort: 22
           CidrIp: 0.0.0.0/0
   
-  Roman_Number_Instance:
+  RomanNumberInstance:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-033b95fb8079dc481
       InstanceType: t2.micro
       KeyName: !Ref Key
       SecurityGroupIds:
-        - !Ref HTTP-SSH_SecGroup
+        - !Ref HTTPSSHSecGroup
       Tags:
         - Key: Name
           Value: !Sub Web Server of ${AWS::StackName}
@@ -48,12 +43,15 @@ Resources:
         mkdir templates && cd templates
         wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/templates/index.html
         wget https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-001-Roman-Numerals-Converter/templates/result.html
-        
- Outputs:
+        cd ..
+        python3 app.py
+
+Outputs:
   AppUrl:
-    Description: URL of the Roman_Number_Converter
+    Description: URL of the RomanNumberInstance
     Value: !Join 
        - ''
        - - 'http://'
-         - !GetAtt Roman_Number_Instance.PublicIp
+         - !GetAtt RomanNumberInstance.PublicIp        
+
    
