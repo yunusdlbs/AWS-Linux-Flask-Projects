@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: This template launches an instance deploys Flask methods and as a result shows you a website related with Roman Numbers.
+Description: This template launches an instance, deploys Flask methods and as a result shows you a website related with Roman Numbers.
   
 Parameters:
   Key:
@@ -32,7 +32,7 @@ Resources:
         - !Ref HTTPSSHSecGroup
       Tags:
         - Key: Name
-          Value: !Sub Web Server of ${AWS::StackName}
+          Value: !Sub Web Server of ${AWS::StackName} Stack
       UserData: !Base64 |
         #! /bin/bash
         yum update -y
