@@ -11,7 +11,7 @@ Resources:
       InstanceType: t2.micro
       KeyName: firstkey # Please use your own key name without .pem
       SecurityGroups: 
-        - cfn-sec-group
+        - HTTP-SSH-Sec-Group
       Tags:
         - Key: Name
           Value: Cfn-Instance
