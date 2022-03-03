@@ -9,7 +9,7 @@ Parameters:
     Type: AWS::EC2::VPC::Id
  
   paramSubnet:
-    Description: Select at least 2 subnet
+    Description: Select all subnet
     Type: List<AWS::EC2::Subnet::Id>
   
   paramKeyName:
@@ -190,7 +190,7 @@ Resources:
                 cd /home/ec2-user
                 echo "${RDSUriMySql}" > dbserver.endpoint
                 chmod 777 dbserver.endpoint
-                folder="https://raw.githubusercontent.com/yunusdlbs/My-projects/main/AWS/CloudFormation/Project-004-Phonebook-Application"
+                folder="https://raw.githubusercontent.com/yunusdlbs/My-Projects/main/AWS/CloudFormation/Project-003-Phonebook-Application"
                 curl $folder/phonebook-app.py -o phonebook-app.py
                 mkdir templates && cd templates
                 curl $folder/templates/add-update.html -o add-update.html
