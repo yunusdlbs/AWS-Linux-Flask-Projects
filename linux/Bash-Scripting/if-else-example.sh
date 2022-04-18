@@ -1,3 +1,5 @@
+#Write a script that first takes user age and give info about his/her retirement etc.
+
 #! /bin/bash
 read -p "Enter your name: " name
 read -p "Enter your age: " age
