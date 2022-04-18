@@ -1,3 +1,5 @@
+# Write a script that gives the reverse  of a number...
+
 #! /bin/bash
 
 read -p "Enter a number: " num
